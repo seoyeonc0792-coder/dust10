@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!-- 한국어 문서 설정 -->
+<html lang="ko">
+<head>
+  <!-- 문자 인코딩 설정 -->
+  <meta charset="UTF-8">
+  <!-- 모바일 및 반응형 뷰포트 설정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 웹앱 타이틀 -->
+  <title>공기 신호등 - 실시간 미세먼지</title>
+  <!-- Chart.js CDN 라이브러리 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- 웹폰트 및 스타일시트 연결 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 전체 레이아웃 래퍼 -->
+  <div class="app-container">
+
+    <!-- 상단 헤더 및 지역 선택 영역 -->
+    <header class="app-header">
+      <div class="header-top">
+        <h1 class="app-title">🚦 공기 신호등</h1>
+        <!-- 시·도 선택 드롭다운 -->
+        <div class="select-wrapper">
+          <select id="sido-select" class="sido-dropdown" aria-label="지역 선택">
+            <option value="전국">전국</option>
+            <option value="서울" selected>서울</option>
+            <option value="부산">부산</option>
+            <option value="대구">대구</option>
+            <option value="인천">인천</option>
+            <option value="광주">광주</option>
+            <option value="대전">대전</option>
+            <option value="울산">울산</option>
+            <option value="세종">세종</option>
+            <option value="경기">경기</option>
+            <option value="강원">강원</option>
+            <option value="충북">충북</option>
+            <option value="충남">충남</option>
+            <option value="전북">전북</option>
+            <option value="전남">전남</option>
+            <option value="경북">경북</option>
+            <option value="경남">경남</option>
+            <option value="제주">제주</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- 메인 대형 공기 신호등 대시보드 -->
+    <section id="traffic-light-card" class="traffic-light-card theme-loading">
+      <!-- 지역 이름 및 기준 시각 표시 -->
+      <div class="traffic-meta">
+        <span id="traffic-region" class="traffic-region">서울</span>
+        <span id="traffic-time" class="traffic-time">기준 시각 확인 중...</span>
+      </div>
+
+      <!-- 이모지 + 상태텍스트 + 평균 수치 메인 디스플레이 -->
+      <div class="traffic-main-display">
+        <!-- 상태 이모지 (🔵🟢🟠🔴) -->
+        <span id="traffic-emoji" class="traffic-emoji">⏳</span>
+        <!-- 상태 텍스트 (좋음/보통/나쁨/매우나쁨) -->
+        <span id="traffic-status" class="traffic-status">불러오는 중...</span>
+        <!-- 평균 수치 및 단위 -->
+        <div class="traffic-value-wrap">
+          <span id="traffic-number" class="traffic-number">-</span>
+          <span class="traffic-unit">㎍/㎥</span>
+        </div>
+      </div>
+
+      <!-- 한 줄 안내 문구 (나쁨 이상이면 '외출 시 마스크를 챙기세요') -->
+      <p id="traffic-message" class="traffic-message">데이터를 불러오는 중입니다...</p>
+    </section>
+
+    <!-- 신호등 등급 범례 바 -->
+    <nav class="traffic-legend" aria-label="등급 범례">
+      <span class="legend-chip chip-good">🔵 좋음 (0~30)</span>
+      <span class="legend-chip chip-normal">🟢 보통 (31~80)</span>
+      <span class="legend-chip chip-bad">🟠 나쁨 (81~150)</span>
+      <span class="legend-chip chip-very-bad">🔴 매우나쁨 (151~)</span>
+    </nav>
+
+    <!-- 미세먼지 수치 상위 10개 측정소 가로 막대그래프 섹션 -->
+    <section class="chart-section" aria-labelledby="chart-title">
+      <div class="chart-header">
+        <h2 id="chart-title" class="chart-title">📊 미세먼지 수치 높은 측정소 TOP 10</h2>
+        <span class="chart-subtitle">단위: ㎍/㎥ (측정 안 됨 제외)</span>
+      </div>
+      <!-- 캔버스를 감싸는 반응형 컨테이너 -->
+      <div class="chart-container">
+        <canvas id="dust-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- 상태 및 로딩 메시지 -->
+    <div id="status-message" class="status-message" aria-live="polite"></div>
+
+    <!-- 측정소 카드 그리드 목록 -->
+    <main id="station-list" class="station-grid" aria-live="polite">
+      <!-- 자바스크립트로 측정소 카드들이 동적으로 추가됩니다 -->
+    </main>
+
+    <!-- 데이터 출처 및 저작권 안내 푸터 영역 (왼쪽 아래 배치) -->
+    <footer class="app-footer">
+      <p class="footer-source">
+        본 데이터는 <strong>한국환경공단 에어코리아(Airkorea)</strong>의 대기오염정보를 기반으로 제공됩니다.
+      </p>
+      <p class="footer-notice">
+        실시간 관측된 자료이며 현지 사정이나 통신 상태, 기기 점검에 따라 차이가 발생할 수 있습니다.
+      </p>
+      <div class="footer-links">
+        <a href="https://www.airkorea.or.kr" target="_blank" rel="noopener noreferrer">에어코리아 바로가기</a>
+        <span class="divider">·</span>
+        <a href="https://www.data.go.kr" target="_blank" rel="noopener noreferrer">공공데이터포털 바로가기</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 비즈니스 로직 스크립트 연결 -->
+  <script src="script.js"></script>
+</body>
+</html>
